@@ -1,0 +1,46 @@
+{
+  "name": "@ywkj/rn-release-cli",
+  "version": "2.0.0",
+  "description": "",
+  "main": "bin/rn-release-cli",
+  "preferGlobal": true,
+  "bin": {
+    "rn-release": "./bin/rn-release-cli"
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "registry": "http://118.31.71.45:4873"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://192.168.0.246/npm/rn-release-cli"
+  },
+  "scripts": {
+    "release": "release-it",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "guomin",
+  "license": "ISC",
+  "keywords": [
+    "react-native",
+    "code-push",
+    "bugsnag",
+    "release"
+  ],
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "commander": "^5.0.0",
+    "cross-spawn": "^7.0.1",
+    "empty-dir": "^2.0.0",
+    "inquirer": "^7.1.0",
+    "mkdirp": "^1.0.3",
+    "ora": "^4.0.3"
+  },
+  "devDependencies": {
+    "release-it": "^12.6.3"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  }
+}
