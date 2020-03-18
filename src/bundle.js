@@ -7,24 +7,32 @@ const fs = require('fs')
 const ora = require('ora')
 
 const join = path.join
-const basename = path.basename
+// const basename = path.basename
 
 const existsSync = fs.existsSync
 
-const codePushFolderName = 'CodePush'
-const sourceMapFolderName = 'SourceMap'
+const codePushFolderName = 'bundle'
+const sourceMapFolderName = 'sourcemap'
 const RNReleaseCLI = chalk.bold.cyan('RN Release CLI')
 
 async function bundle(options) {
-  const {
-    bundlePath,
-  } = options
+  return new Promise(async (resolve, reject) => {
+    const {
+      bundlePath,
+    } = options
+  
+    // const dest = join(process.cwd(), bundlePath)
+    await checkBundleFolderExists(bundlePath)
+  
+    try {
+      await rnBundleAsync(options)
+      resolve()
+    } catch (err) {
+      process.exit(1)
+    }
 
-  const dest = join(process.cwd(), bundlePath)
-  await checkBundleFolderExists(dest)
-
-  await rnBundleAsync(options)
-  process.exit(0)
+    // process.exit(0)
+  })
 }
 
 function rnBundleAsync(options) {
@@ -43,6 +51,7 @@ function rnBundleAsync(options) {
     const bundleFilePath = join(bundleFolderPath, bundleFileName)
     const sourceMapFilePath = join(dest, sourceMapFolderName, sourceMapFileName)
 
+    console.log(`----------------\n`)
     const spinner = ora(`${RNReleaseCLI} 打包中...`)
     spinner.start()
 
@@ -149,7 +158,6 @@ function removeDir(dir) {
 }
 
 async function checkBundleFolderExists(folderPath) {
-  console.log('folderPath: ', folderPath)
   if (!existsSync(folderPath)) {
     try {
       const bundlePath = join(folderPath, codePushFolderName)

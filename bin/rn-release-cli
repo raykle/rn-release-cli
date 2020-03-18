@@ -1,35 +1,37 @@
 #!/usr/bin/env node
-// --inspect
-// -brk
+// --inspect-brk
 
 const program = require('commander')
 const inquirer = require('inquirer')
 const path = require('path')
 const chalk = require('chalk')
-
-const incompleteBundlePath = './cli/bundle/code_push_output'
-const iosBundleFileName = 'main.jsbundle'
-const androidBundleFileName = 'index.android.bundle'
+const ora = require('ora')
+const Prompt = require('../src/prompt')
 
 const bundleOptions = {
   platform: 'ios',
-  entryFile: 'index.js',
-  bundlePath: `${incompleteBundlePath}_ios`,
-  bundleFileName: iosBundleFileName,
-  sourceMapFileName: `${iosBundleFileName}.map`,
+  entryFile: '',
+  bundlePath: '',
+  bundleFileName: '',
+  sourceMapFileName: '',
   resetCache: false,
 }
 
-const releaseOptions = {
-  appName: 'ZDW-iOS',
-  targetBinaryVersion: null,
+const codePushOptions = {
+  appName: '',
+  targetBinaryVersion: '',
   desc: '',
   env: 'Staging',
 }
 
 const bugsnagOptions = {
-  version: null,
+  version: '',
+  apiKey: '',
 }
+
+const defaultConfig = require('../config/rn-release.json')
+
+const prompt = new Prompt()
 
 /* ********************************************************** */
 /* ********************************************************** */
@@ -55,180 +57,123 @@ program
 program
   .command('release')
   .description('xxx')
-  .action(() => {
-    bundlePlatformChoice()
+  .action(async () => {
+    initDefaultConfig()
+    const platform = await prompt.bundlePlatformChoice()
+    handlePlatform(platform)
+    mergeConfigFromProject(platform)
+
+    // const newEntryFile = await prompt.bundleEntryFileConfirm(bundleOptions.entryFile)
+    // if (newEntryFile) {
+        // fixme:
+    //   bundleOptions.entryFile = newEntryFile
+    // }
+
+    const isBundleResetCache = await prompt.bundleResetCacheConfirm()
+    bundleOptions.resetCache = isBundleResetCache
+
+    const codePushEnv = await prompt.codePushEnvChoice()
+    codePushOptions.env = codePushEnv
+
+    const codePushTargetVersion = await prompt.codePushTargetVersionInput()
+    codePushOptions.targetBinaryVersion = codePushTargetVersion
+
+    const codePushDescConfirmed = await prompt.codePushDescConfirm(codePushOptions.desc)
+    if (!codePushDescConfirmed) {
+      console.log('')
+      ora().fail('请修改 `package.json` 中 `description` 的值后，重新发布')
+      process.exit(1)
+    }
+
+    console.log('bundleOptions: ', JSON.stringify(bundleOptions))
+    console.log('codePushOptions: ', JSON.stringify(codePushOptions))
+    console.log('bugsnagOptions: ', JSON.stringify(bugsnagOptions))
+
+    require('../src/bundle')(bundleOptions)
+      .then(() => {
+        process.exit(0)
+      })
+      .catch(err => {
+        console.log('打包失败: ', err)
+        process.exit(1)
+      })
   })
 
 
 program.parse(process.argv)
 
-function help() {
+function help() {}
+
+function initDefaultConfig() {
+  const {
+    bundleOptions: defaultBundleOptions,
+    codePushOptions: defaultCodePushOptions,
+    bugsnagOptions: defaultBugsnagOptions
+  } = defaultConfig
+
+  bundleOptions.entryFile = defaultBundleOptions.entryFile
+  bundleOptions.bundlePath = defaultBundleOptions.bundlePath
+  bugsnagOptions.apiKey = defaultBugsnagOptions.apiKey
 }
 
-/* ********************************************************** */
-/* *********************  react-native  ********************* */
-/* ********************************************************** */
+function handlePlatform(platform) {
+  bundleOptions.platform = platform
+  // bundleOptions.bundlePath = path.join(process.cwd(), bundleOptions.bundlePath, platform)
+  bundleOptions.bundlePath = bundleOptions.bundlePath + '/' + platform
 
-function bundlePlatformChoice() {
-  inquirer
-    .prompt([
-      {
-        type: 'list',
-        name: 'platform',
-        message: '[react-native] 请选择打包平台',
-        choices: [
-          {
-            name: 'iOS',
-            value: 'ios'
-          },
-          {
-            name: 'Android',
-            value: 'android'
-          }
-        ]
-      }
-    ])
-    .then(({ platform }) => {
-      bundleOptions.platform = platform
-      bundleOptions.bundlePath = `${incompleteBundlePath}_${platform}`
-
-      const isIOS = platform === 'ios'
-      bundleOptions.bundleFileName = isIOS ? iosBundleFileName : androidBundleFileName
-      bundleOptions.sourceMapFileName = `${bundleOptions.bundleFileName}.map`
-
-      releaseOptions.appName = isIOS ? 'ZDW-iOS' : 'ZDW-ANDROID'
-
-      bundleEntryFileConfirm()
-    })
+  const { 
+    bundleOptions: defaultBundleOptions,
+    codePushOptions: defaultCodePushOptions,
+  } = defaultConfig
+  Object.assign(bundleOptions, defaultBundleOptions[platform])
+  Object.assign(codePushOptions, defaultCodePushOptions[platform])
 }
 
-function bundleEntryFileConfirm() {
-  inquirer
-    .prompt([
-      {
-        type: 'confirm',
-        name: 'isDefaultIndexJS',
-        message: '[react-native] 确定打包入口文件 (index.js)',
-        default: true
-      }
-    ])
-    .then(({ isDefaultIndexJS }) => {
-      if (!isDefaultIndexJS) {
-        bundleEntryFileInput()
-      } else {
-        bundleResetCacheConfirm()
-      }
-    })
+function mergeConfigFromProject(platform) {
+  // package.json
+  const projectPackageJSON = require(path.join(process.cwd(), './package.json'))
+  const {
+    version: packageJSONVersion,
+    description: packageJSONDesc = '',
+    newFeatures: packageJSONNewFeatures = '',
+  } = projectPackageJSON
+
+  if (!packageJSONVersion || packageJSONVersion.length === 0) {
+    ora().fail('package.json 中 `version` 为空')
+    process.exit(1)
+  }
+
+  // rn-release.json
+  const projectRnReleaseConfig = require(path.join(process.cwd(), './rn-release.json'))
+  let {
+    bundleOptions: projectBundleOptions,
+    codePushOptions: projectCodePushOptions,
+    bugsnagOptions: projectBugsnagOptions
+  } = projectRnReleaseConfig || {}
+
+  if (!projectBundleOptions || typeof projectBundleOptions !== 'object') { projectBundleOptions = {} }
+  if (!projectCodePushOptions || typeof projectCodePushOptions !== 'object') { projectCodePushOptions = {} }
+  if (!projectBugsnagOptions || typeof projectBugsnagOptions !== 'object') { projectBugsnagOptions = {} }
+
+  // bundleOptions
+  const { [platform]: platformBundleOptions = {} } = projectBundleOptions
+  bundleOptions.bundlePath = projectBundleOptions.bundlePath + '/' + platform
+  delete projectBundleOptions.ios
+  delete projectBundleOptions.android
+  delete projectBundleOptions.bundlePath
+  Object.assign(bundleOptions, platformBundleOptions, projectBundleOptions)
+
+  // codePushOptions
+  codePushOptions.desc = JSON.stringify({
+    desc: packageJSONDesc,
+    newFeatures: packageJSONNewFeatures,
+  })
+  const { [platform]: platformCodePushOptions = {} } = projectCodePushOptions
+  delete projectCodePushOptions.ios
+  delete projectCodePushOptions.android
+  Object.assign(codePushOptions, platformCodePushOptions)
+
+  // bugsnagOptions
+  bugsnagOptions.version = packageJSONVersion
+  Object.assign(bugsnagOptions, projectBugsnagOptions)
 }
-
-function bundleEntryFileInput() {
-  inquirer
-    .prompt([
-      {
-        type: 'input',
-        name: 'entryFileName',
-        message: '[react-native] 请输入打包入口文件名称',
-        default: 'index.js'
-      }
-    ])
-    .then(({ entryFileName }) => {
-      bundleOptions.entryFileName = entryFileName
-      bundleResetCacheConfirm()
-    })
-}
-
-function bundleResetCacheConfirm() {
-  inquirer
-    .prompt([
-      {
-        type: 'confirm',
-        name: 'isBundleResetCache',
-        message: '[react-native] 是否 reset-cache？',
-        default: false
-      }
-    ])
-    .then(({ isBundleResetCache }) => {
-      bundleOptions.resetCache = isBundleResetCache
-      codePushEnvChoice()
-    })
-}
-
-/* ********************************************************** */
-/* **********************  code-push  *********************** */
-/* ********************************************************** */
-
-function codePushEnvChoice() {
-  inquirer
-    .prompt([
-      {
-        type: 'list',
-        name: 'env',
-        message: '[code-push] 请选择发布环境',
-        choices: [
-          {
-            name: 'Staging',
-            value: 'Staging'
-          },
-          {
-            name: 'Production',
-            value: 'Production'
-          }
-        ]
-      }
-    ])
-    .then(({ env }) => {
-      releaseOptions.env = env
-      codePushTargetVersionInput()
-      // require('../src/bundle')(bundleOptions)
-    })
-}
-
-function codePushTargetVersionInput() {
-  inquirer
-    .prompt([
-      {
-        type: 'input',
-        name: 'targetBinaryVersion',
-        message: '[code-push] 请输入适配的 App 版本号',
-        validate: (input) => {
-          if (input === '1.0') {
-            return true
-          }
-          return '请输入正确的版本号（eg: 1.0 或者 1.0-2.0）'
-        }
-      }
-    ])
-    .then(({ targetBinaryVersion }) => {
-      releaseOptions.targetBinaryVersion = targetBinaryVersion
-      codePushDescConfirm()
-    })
-}
-
-function codePushDescConfirm() {
-  // eslint-disable-next-line import/no-dynamic-require
-  const desc = require(path.join(process.cwd(), 'package.json')).description
-  // TODO:
-  // const newFeatures = require(path.join(process.cwd(), 'package.json')).newFeatures
-  inquirer
-    .prompt([
-      {
-        type: 'confirm',
-        name: 'codePushDescConfirmed',
-        message: `[code-push] 请确认描述：\n\"${desc}\"`,
-        default: true
-      }
-    ])
-    .then(({ codePushDescConfirmed }) => {
-      if (codePushDescConfirmed) {
-        releaseOptions.desc = desc
-        require('../src/bundle')(bundleOptions)
-      } else {
-        console.log(chalk.bold.red('请修改 `package.json` 中 `description` 的值后，重新发布'))
-        process.exit(1)
-      }
-    })
-}
-
-/* ********************************************************** */
-/* ***********************  bugsnag  ************************ */
-/* ********************************************************** */

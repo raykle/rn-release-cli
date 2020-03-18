@@ -1,0 +1,25 @@
+{
+  "bundleOptions": {
+    "entryFile": "index.js",
+    "bundlePath": "./cli/bundle",
+    "ios": {
+      "bundleFileName": "main.jsbundle",
+      "sourceMapFileName": "main.jsbundle.map"
+    },
+    "android": {
+      "bundleFileName": "index.android.bundle",
+      "sourceMapFileName": "index.android.bundle.map"
+    }
+  },
+  "codePushOptions": {
+    "ios": {
+      "appName": ""
+    },
+    "android": {
+      "appName": ""
+    }
+  },
+  "bugsnagOptions": {
+    "apiKey": ""
+  }
+}
