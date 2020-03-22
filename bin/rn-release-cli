@@ -49,7 +49,7 @@ program
 
 program
   .command('release')
-  .description('[react-native bundle] => [code-push release] => [bugsnag-sourcemaps upload]')
+  .description('Collection command of react-native bundle, release to code-push and upload sourcemap to bugsnag.')
   .action(async () => {
     await initConfigWithPlatform()
 

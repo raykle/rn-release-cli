@@ -1,7 +1,7 @@
 {
   "name": "rn-release-cli",
   "version": "2.0.0-alpha2.0",
-  "description": "",
+  "description": "Command with a collection of react-native bundle, release to code-push and upload sourcemap to bugsnag.",
   "main": "bin/rn-release-cli",
   "preferGlobal": true,
   "bin": {
@@ -9,19 +9,22 @@
   },
   "private": false,
   "publishConfig": {
-    "access": "public",
-    "registry": "http://118.31.71.45:4873"
+    "access": "public"
   },
   "repository": {
     "type": "git",
-    "url": "http://192.168.0.246/npm/rn-release-cli"
+    "url": "https://github.com/raykle/rn-release-cli.git"
   },
+  "homepage": "https://github.com/raykle/rn-release-cli",
   "scripts": {
     "release": "release-it",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "guomin",
-  "license": "ISC",
+  "author": {
+    "name": "raykle",
+    "email": "raykle.up@gmail.com"
+  },
+  "license": "MIT",
   "keywords": [
     "react-native",
     "code-push",
@@ -50,6 +53,6 @@
     "release-it": "^12.6.3"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=10.0.0"
   }
 }
