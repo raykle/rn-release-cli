@@ -1,5 +1,5 @@
 {
-  "name": "@ywkj/rn-release-cli",
+  "name": "rn-release-cli",
   "version": "2.0.0-alpha2.0",
   "description": "",
   "main": "bin/rn-release-cli",

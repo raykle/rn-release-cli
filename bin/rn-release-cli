@@ -2,7 +2,6 @@
 // --inspect-brk
 
 const program = require('commander')
-const inquirer = require('inquirer')
 const path = require('path')
 const chalk = require('chalk')
 const ora = require('ora')
@@ -310,7 +309,7 @@ function logOptions() {
 }
 
 function done() {
-  console.log(`\n${Constants.RNReleaseCLI} ${chalk.bgGreen.white('done')}`)
+  console.log(`\n🍻 ${Constants.RNReleaseCLI} ${chalk.bgGreen.white('done')}`)
   process.exit(0)
 }
 

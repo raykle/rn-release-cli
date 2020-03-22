@@ -1,9 +1,9 @@
-# @ywkj/rn-release-cli
+# rn-release-cli
 
 ## Installation
 
 ```
-$ npm install -g @ywkj/rn-release-cli
+$ npm install -g rn-release-cli
 ```
 
 ## Usage
@@ -19,3 +19,4 @@ Use `rn-release -h` for more help.
 
 ## Screenshots
 
+![Screenshots](./screenshots/Screenshots@2x.png)
