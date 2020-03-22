@@ -5,8 +5,9 @@ const program = require('commander')
 const path = require('path')
 const chalk = require('chalk')
 const ora = require('ora')
-const Prompt = require('../lib/prompt')
 const fs = require('fs')
+
+const Prompt = require('../lib/prompt')
 
 const join = path.join
 
@@ -31,6 +32,12 @@ const bugsnagOptions = {
   apiKey: '',
 }
 
+const releaseOptions = {
+  reactNativeBundle: false,
+  codePushRelease: false,
+  bugsnagUpload: false,
+}
+
 const defaultConfig = require('../config/rn-release.config.json')
 const Constants = require('../lib/constants')
 
@@ -50,18 +57,45 @@ program
 program
   .command('release')
   .description('Collection command of react-native bundle, release to code-push and upload sourcemap to bugsnag.')
+  .option('--bundle', '', triggerReactNativeBundle)
+  .option('--codepush', '', triggerCodePushRelease)
+  .option('--bugsnag', '', triggerBugsnagUpload)
   .action(async () => {
+    let {
+      reactNativeBundle,
+      codePushRelease,
+      bugsnagUpload,
+    } = releaseOptions
+
+    if (!reactNativeBundle && !codePushRelease && !bugsnagUpload) {
+      reactNativeBundle = true
+      codePushRelease = true
+      bugsnagUpload = true
+    }
+
     await initConfigWithPlatform()
 
     try {
-      await reactNativePromptHandle()
-      await codePushPromptHandle()
-      await bugsnagPromptHandle()
+      if (reactNativeBundle) {
+        await reactNativePromptHandle()
+      }
+      if (codePushRelease) {
+        await codePushPromptHandle()
+      }
+      if (bugsnagUpload) {
+        await bugsnagPromptHandle()
+      }
       promptComplete()
 
-      await reactNativeCmd()
-      await codePushCmd()
-      await bugsnagCmd()
+      if (reactNativeBundle) {
+        await reactNativeCmd()
+      }
+      if (codePushRelease) {
+        await codePushCmd()
+      }
+      if (bugsnagUpload) {
+        await bugsnagCmd()
+      }
 
       done()
     } catch (err) {
@@ -69,6 +103,7 @@ program
     }
   })
 
+/**
 program
   .command('bundle')
   .description('[react-native bundle] command')
@@ -113,10 +148,23 @@ program
       fail()
     }
   })
+ */
 
 program.parse(process.argv)
 
 function help() { }
+
+function triggerReactNativeBundle() {
+  releaseOptions.reactNativeBundle = true
+}
+
+function triggerCodePushRelease() {
+  releaseOptions.codePushRelease = true
+}
+
+function triggerBugsnagUpload() {
+  releaseOptions.bugsnagUpload = true
+}
 
 /* ********************************************************** */
 /* *********************  Config handle  ******************** */
