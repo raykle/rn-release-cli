@@ -1,5 +1,12 @@
 # rn-release-cli
 
+[![npm version](https://badge.fury.io/js/rn-release-cli.svg)](//npmjs.com/package/rn-release-cli)
+[![downloads](https://img.shields.io/npm/dt/rn-release-cli.svg?maxAge=2592000)](https://www.npmjs.com/package/rn-release-cli)
+
+
+[![npm package](https://nodei.co/npm/rn-release-cli.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/rn-release-cli/)
+
+
 ## Installation
 
 ```
