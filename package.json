@@ -1,6 +1,6 @@
 {
   "name": "@ywkj/rn-release-cli",
-  "version": "2.0.0-alpha1",
+  "version": "2.0.0-alpha1.0",
   "description": "",
   "main": "bin/rn-release-cli",
   "preferGlobal": true,
@@ -30,6 +30,7 @@
     "cli"
   ],
   "dependencies": {
+    "bugsnag-sourcemaps": "^1.0.4",
     "chalk": "^3.0.0",
     "commander": "^5.0.0",
     "cross-spawn": "^7.0.1",
@@ -39,6 +40,13 @@
     "ora": "^4.0.3"
   },
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
     "release-it": "^12.6.3"
   },
   "engines": {
