@@ -1,7 +1,7 @@
 {
   "bundleOptions": {
     "entryFile": "index.js",
-    "bundlePath": "./cli/bundle",
+    "bundlePath": "./bundle",
     "ios": {
       "bundleFileName": "main.jsbundle",
       "sourceMapFileName": "main.jsbundle.map"
