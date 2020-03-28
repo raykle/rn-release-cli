@@ -26,8 +26,12 @@ Use `rn-release -h` for more help.
 
 ## Screenshots
 
-![Screenshots](./screenshots/Screenshots@2x.png)
+![screenshot](./assets/screenshot@2x.png)
 
----
+## License
 
-<a href="https://www.buymeacoffee.com/raykle" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
+[MIT](./LICENSE)
+
+<br/>
+
+[![buymeacoffee](./assets/buymeacoffee.svg)](https://www.buymeacoffee.com/raykle)
