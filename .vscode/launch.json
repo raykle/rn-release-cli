@@ -10,7 +10,7 @@
       "name": "Launch Program",
       "sourceMaps": true,
       "stopOnEntry": true,
-      "program": "${workspaceFolder}/bin/rn-release-cli",
+      "program": "${workspaceFolder}/bin/rn-release-cli.js",
       "skipFiles": ["<node_internals>/**"]
     }
   ]

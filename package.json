@@ -1,11 +1,11 @@
 {
   "name": "rn-release-cli",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Command with a collection of react-native bundle, release to code-push and upload sourcemap to bugsnag.",
-  "main": "bin/rn-release-cli",
+  "main": "./bin/rn-release-cli.js",
   "preferGlobal": true,
   "bin": {
-    "rn-release": "./bin/rn-release-cli"
+    "rn-release": "./bin/rn-release-cli.js"
   },
   "private": false,
   "publishConfig": {
@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/raykle/rn-release-cli",
   "scripts": {
+    "start": "node ./bin/rn-release-cli.js",
+    "debug": "node --inspect-brk ./bin/rn-release-cli.js",
     "release": "release-it",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
