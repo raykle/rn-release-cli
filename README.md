@@ -35,4 +35,4 @@ Use `rn-release -h` for more help.
 <br/>
 
 <!-- [![buymeacoffee](./assets/buymeacoffee.svg)](https://www.buymeacoffee.com/raykle) -->
-<a href="https://www.buymeacoffee.com/raykle" target="_blank"><img src="./assets/buymeacoffee.png" alt="Buy Me A Coffee" width="181"/></a>
+<!-- <a href="https://www.buymeacoffee.com/raykle" target="_blank"><img src="./assets/buymeacoffee.png" alt="Buy Me A Coffee" width="181"/></a> -->
