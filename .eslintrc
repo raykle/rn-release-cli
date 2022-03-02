@@ -11,5 +11,9 @@
       "jsx": true
     }
   },
-  "rules": {}
+  "rules": {
+    "no-undef": [
+      "warn"
+    ]
+  }
 }

@@ -1,16 +1,10 @@
 {
   "preReleaseId": null,
-  "pkgFiles": ["package.json"],
-  "use": "git.tag",
-  "scripts": {
-    "beforeStart": null,
-    "beforeBump": null,
-    "afterBump": null,
-    "beforeStage": null,
-    "changelog": "git log --pretty=format:\"* %s (%h)\" [REV_RANGE]",
-    "afterRelease": null
+  "hooks": {
+    "before:init": null
   },
   "git": {
+    "changelog": "git log --pretty=format:\"* %s (%h)\" ${latestTag}...HEAD",
     "requireCleanWorkingDir": false,
     "requireUpstream": true,
     "addUntrackedFiles": false,

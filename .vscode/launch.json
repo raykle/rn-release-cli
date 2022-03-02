@@ -6,12 +6,24 @@
   "configurations": [
     {
       "type": "node",
+      // "runtimeExecutable": "${env:HOME}/.nvm/versions/node/v10.15.3/bin/node",
       "request": "launch",
       "name": "Launch Program",
       "sourceMaps": true,
       "stopOnEntry": true,
       "program": "${workspaceFolder}/bin/rn-release-cli.js",
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+      "name": "Attach by Process ID",
+      "processId": "${command:PickProcess}",
+      "request": "attach",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "pwa-node"
     }
   ]
 }

@@ -1,7 +1,9 @@
 {
   "bundleOptions": {
     "entryFile": "index.js",
-    "bundlePath": "./bundle",
+    "bundleRootPath": "./dist",
+    "bundleFileFolderName": "bundle",
+    "sourceMapFileFolderName": "sourcemap",
     "ios": {
       "bundleFileName": "main.jsbundle",
       "sourceMapFileName": "main.jsbundle.map"
@@ -21,5 +23,12 @@
   },
   "bugsnagOptions": {
     "apiKey": ""
+  },
+  "versionConfig": {
+    "fileName": "rn-release.version.json",
+    "key": {
+      "bugsnagUploadCodeBundleId": "bugsnagUploadCodeBundleId",
+      "codePushReleaseDescription": "codePushReleaseDescription"
+    }
   }
 }
