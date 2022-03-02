@@ -1,6 +1,6 @@
 {
   "name": "rn-release-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Command with a collection of `react-native bundle`, `release to code-push` and `upload sourcemap to bugsnag`.",
   "main": "./bin/rn-release-cli.js",
   "preferGlobal": true,
