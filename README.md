@@ -26,7 +26,8 @@ Use `rn-release -h` for more help.
 
 ## Screenshots
 
-![screenshot](./assets/screenshot@2x.png)
+<!-- ![screenshot](./assets/screenshot@2x.png) -->
+<p> <img src="./assets/screenshot@2x.png" alt="raykle" width=1000 /> <p>
 
 ## License
 
