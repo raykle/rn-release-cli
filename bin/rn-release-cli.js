@@ -97,6 +97,12 @@ program
       if (codePushRelease) {
         await codePushPromptHandle()
       }
+
+      if (codePushRelease && codePushOptions.deploymentName !== 'Production' && bugsnagUpload) {
+        bugsnagUpload = false
+        cliOptions.bugsnagUpload = false
+      }
+
       if (bugsnagUpload) {
         await bugsnagPromptHandle()
       }
@@ -107,11 +113,27 @@ program
       if (reactNativeBundle) {
         await reactNativeBundleCmd()
       }
+
       if (codePushRelease) {
         await codePushCmd()
       }
+
       if (bugsnagUpload) {
         await bugsnagCmd()
+      }
+
+      const warnTxt = chalk.bgHex('#D18F52').black('WARN:')
+      const warnContentChalk = chalk.hex('#D18F52')
+      console.log('')
+
+      if (!reactNativeBundle) {
+        console.log(`${warnTxt} ${warnContentChalk(`skipped run cmd: \`react-native bundle\`.`)}`)
+      }
+      if (!codePushRelease) {
+        console.log(`${warnTxt} ${warnContentChalk(`skipped run cmd: \`code-push release\`.`)}`)
+      }
+      if (!bugsnagUpload) {
+        console.log(`${warnTxt} ${warnContentChalk(`skipped run cmd: \`bugsnag upload\`.`)}`)
       }
 
       done()
