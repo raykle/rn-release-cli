@@ -268,12 +268,12 @@ function mergeConfigFromProject(platform) {
   const { fileName: versionConfigFileName, key: versionConfigKeyConfig } = versionConfig
 
   if (!versionConfigFileName) {
-    fail(`未指定 \`rn-release.config.json\` 中属性值：\`versionConfig.fileName\``);
+    fail(`Please set the value of \`versionConfig.fileName\` in \`rn-release.config.json\`.`);
   }
 
   const { bugsnagUploadCodeBundleId, codePushReleaseDescription } = versionConfigKeyConfig
   if (!bugsnagUploadCodeBundleId) {
-    fail(`未指定 \`rn-release.config.json\` 中属性值：\`versionConfig.key.bugsnagUploadCodeBundleId\``);
+    fail(`Please set the value of \`versionConfig.key.bugsnagUploadCodeBundleId\` in \`rn-release.config.json\`.`);
   }
 
   // version file 配置检测
@@ -289,7 +289,7 @@ function mergeConfigFromProject(platform) {
   // codePush 配置检测
   if (codePushRelease) {
     if (!codePushOptions.appName) {
-      fail(`\n未配置 \`rn-release.config.json\`，或未配置 codePushOptions ${platform} 平台的 \`appName\``);
+      fail(`File \`rn-release.config.json\` is not configed, or the value of  \`appName\` is not configed in codePushOptions.${platform}.`);
     }
 
     if (!codePushReleaseDescription) {
@@ -325,11 +325,11 @@ function mergeConfigFromProject(platform) {
     bugsnagOptions.codeBundleId = bugsnagCodeBundleId
 
     if (!bugsnagOptions.apiKey) {
-      fail(`未配置 \`rn-release.config.json\`，或未配置 bugsnagOptions 的 \`apiKey\``);
+      fail(`File \`rn-release.config.json\` is not configed, or the value of \`apiKey\` is not configed in bugsnagOptions.`);
     }
 
     if (!bugsnagOptions.codeBundleId) {
-      fail(`未配置 \`${versionConfig.fileName}\`，或未配置 \`${versionConfig.key.bugsnagUploadCodeBundleId}\``);
+      fail(`File \`${versionConfig.fileName}\` is not configed, or the value of \`${versionConfig.key.bugsnagUploadCodeBundleId}\` is not configed.`);
     }
   }
 }
@@ -357,14 +357,14 @@ async function codePushPromptHandle() {
   // code-push 描述确认
   const codePushDescConfirmed = await prompt.codePushDescConfirm(codePushOptions.desc)
   if (!codePushDescConfirmed) {
-    fail(`\n请确认 '${versionConfig.fileName}' 中 '${versionConfig.key.codePushReleaseDescription}' 的值`)
+    fail(`Please confirm the value of '${versionConfig.key.codePushReleaseDescription}' in '${versionConfig.fileName}'.`)
   }
 }
 
 async function bugsnagPromptHandle() {
   const bundleIdConfirmed = await prompt.bugsnagBundleIdConfirm(bugsnagOptions.codeBundleId)
   if (!bundleIdConfirmed) {
-    fail(`\n请确认 '${versionConfig.fileName}' 中 '${versionConfig.key.bugsnagUploadCodeBundleId}' 的值`)
+    fail(`Please confirm the value of '${versionConfig.key.bugsnagUploadCodeBundleId}' in '${versionConfig.fileName}'.`)
   }
 }
 
@@ -427,6 +427,7 @@ function done() {
 
 function fail(failMsg = '') {
   if (failMsg) {
+    console.log('')
     ora().fail(chalk.dim(failMsg));
   }
   process.exit(1)
