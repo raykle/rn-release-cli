@@ -1,6 +1,6 @@
 {
   "name": "rn-release-cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Generic CLI tool for react-native project to automate executing cmd `react-native bundle`, `code-push release` and `bugsnag upload`.",
   "main": "./bin/rn-release-cli.js",
   "preferGlobal": true,
