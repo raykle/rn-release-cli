@@ -8,6 +8,9 @@ const ora = require('ora')
 const fs = require('fs')
 
 const Prompt = require('../lib/prompt')
+const rnBundle = require('../lib/bundle')
+const codePush = require('../lib/code-push')
+const bugsnagUpload = require('../lib/bugsnag')
 
 const join = path.join
 
@@ -58,19 +61,19 @@ const prompt = new Prompt()
 /* ********************************************************** */
 
 program
-  .version(require('../package.json').version, '-v, --version')
-  .usage('<cmd>')
-  .on('-h, --help', help)
+  .version(require('../package.json').version, '-v --version')
+  .usage('[options]')
+  .on('--help', help)
 
 /* ********************************************************** */
 /* ********************************************************** */
 
 program
-  .command('release')
-  .description('Collection command of react-native bundle, release to code-push and upload sourcemap to bugsnag.')
-  .option('--bundle', '', triggerReactNativeBundle)
-  .option('--codepush', '', triggerCodePushRelease)
-  .option('--bugsnag', '', triggerBugsnagUpload)
+  // .command('release')
+  .description('Generic CLI tool for react-native project to automate executing cmd `react-native bundle`, `code-push release` and `bugsnag upload`.')
+  .option('-b --bundle', 'execute cmd \`react-native bundle\`', triggerReactNativeBundle)
+  .option('-c --codepush', 'execute cmd \`code-push release\`', triggerCodePushRelease)
+  .option('-B --bugsnag', 'execute cmd \`bugsnag upload\`', triggerBugsnagUpload)
   .action(async () => {
     let {
       reactNativeBundle,
@@ -144,7 +147,9 @@ program
 
 program.parse(process.argv)
 
-function help() { }
+function help() {
+  console.log(`\nFor more details, please see https://github.com/raykle/rn-release-cli`)
+}
 
 function triggerReactNativeBundle() {
   cliOptions.reactNativeBundle = true
@@ -284,8 +289,7 @@ function mergeConfigFromProject(platform) {
   // codePush 配置检测
   if (codePushRelease) {
     if (!codePushOptions.appName) {
-      console.log('')
-      fail(`未配置 \`rn-release.config.json\`，或未配置 codePushOptions ${platform} 平台的 \`appName\``);
+      fail(`\n未配置 \`rn-release.config.json\`，或未配置 codePushOptions ${platform} 平台的 \`appName\``);
     }
 
     if (!codePushReleaseDescription) {
@@ -353,16 +357,14 @@ async function codePushPromptHandle() {
   // code-push 描述确认
   const codePushDescConfirmed = await prompt.codePushDescConfirm(codePushOptions.desc)
   if (!codePushDescConfirmed) {
-    console.log('')
-    fail(`请确认 '${versionConfig.fileName}' 中 '${versionConfig.key.codePushReleaseDescription}' 的值`)
+    fail(`\n请确认 '${versionConfig.fileName}' 中 '${versionConfig.key.codePushReleaseDescription}' 的值`)
   }
 }
 
 async function bugsnagPromptHandle() {
   const bundleIdConfirmed = await prompt.bugsnagBundleIdConfirm(bugsnagOptions.codeBundleId)
   if (!bundleIdConfirmed) {
-    console.log('')
-    fail(`请确认 '${versionConfig.fileName}' 中 '${versionConfig.key.bugsnagUploadCodeBundleId}' 的值`)
+    fail(`\n请确认 '${versionConfig.fileName}' 中 '${versionConfig.key.bugsnagUploadCodeBundleId}' 的值`)
   }
 }
 
@@ -372,20 +374,20 @@ async function bugsnagPromptHandle() {
 
 function reactNativeBundleCmd() {
   // react-native 打包
-  return require('../lib/bundle')(bundleOptions)
+  return rnBundle(bundleOptions)
 }
 
 function codePushCmd() {
   // code-push 上传
   const { bundlePath, bundleFileFolderName } = bundleOptions
   const bundleFileFolderPath = join(process.cwd(), bundlePath, bundleFileFolderName)
-  return require('../lib/code-push')({ ...codePushOptions, bundlePath: bundleFileFolderPath })
+  return codePush({ ...codePushOptions, bundlePath: bundleFileFolderPath })
 }
 
 function bugsnagCmd() {
   // bugsnag 上传
   const uploadOptions = bugsnagUploadOptions()
-  return require('../lib/bugsnag')({ ...bugsnagOptions, ...uploadOptions })
+  return bugsnagUpload({ ...bugsnagOptions, ...uploadOptions })
 }
 
 /* ********************************************************** */

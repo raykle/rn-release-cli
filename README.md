@@ -6,6 +6,7 @@
 
 [![npm package](https://nodei.co/npm/rn-release-cli.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/rn-release-cli/)
 
+Generic CLI tool for react-native project to automate executing cmd `react-native bundle`, `code-push release` and `bugsnag upload`.
 
 ## Installation
 
@@ -15,19 +16,35 @@ $ npm install -g rn-release-cli
 
 ## Usage
 
-Create a new file like [rn-release.config.json](./config/rn-release.config.json) in your react-native root directory, then set the variable in the json file if needed. Otherwise, the command will use the default value.
+Step 1:
+
+Create a new file named [rn-release.config.json](./config/rn-release.config.json) in your react-native root directory, then set the variable in the json file if needed. Otherwise, the command will use the default value.
+
+Step 2:
 
 ```
 $ cd ./Awesome-react-native
-$ rn-release release
+$ rn-release
 ```
+
+`rn-release` is the same as command: `rn-release --bundle --codepush --bugsnag`.
+
+<br>
+
+_Note_: If execute the command with bouth `--codepush` and `--bugsnag` options, but the `deploymentName` args for `code-push` choose the `Staging`, the `bugsnag upload` command will be _skipped_.
+
+For example: `rn-release --codepush --bugsnag`, `--bugsnag` option will be skipped if choose the `Staging` for `deploymentName`.
+
+<br>
 
 Use `rn-release -h` for more help.
 
-## Screenshots
+<p> <img src="./assets/help@2x.png" alt="raykle" width=1000 /> <p>
 
-<!-- ![screenshot](./assets/screenshot@2x.png) -->
-<p> <img src="./assets/screenshot@2x.png" alt="raykle" width=1000 /> <p>
+## Example
+
+<!-- ![screenshot](./assets/example@2x.png) -->
+<p> <img src="./assets/example@2x.png" alt="raykle" width=1000 /> <p>
 
 ## License
 
